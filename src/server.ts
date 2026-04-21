@@ -1,13 +1,13 @@
 import express from "express";
 import CookieParser from "cookie-parser";
-import authRoutes from "./routes/auth.route";
-import messageRoutes from "./routes/message.route";
+import authRoutes from "./routes/auth.route.ts";
+import messageRoutes from "./routes/message.route.ts";
 import path from "path";
-import { connectDB } from "./lib/db";
+import { connectDB } from "./lib/db.ts";
 import dns from "node:dns/promises";
-import { ENV } from "./lib/ENV";
+import { ENV } from "./lib/ENV.ts";
 import cors from "cors";
-import { app, server } from "./lib/socket";
+import { app, server } from "./lib/socket.ts";
 dns.setServers(["1.1.1.1"]);
 
 const __dirname = path.resolve();
@@ -19,7 +19,6 @@ app.use(
     credentials: true,
   })
 );
-
 app.use(CookieParser());
 app.use(express.json({ limit: '5mb' }));
 
