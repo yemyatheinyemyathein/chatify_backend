@@ -1,17 +1,17 @@
-import { Request, Response } from "express";
-import { sendWelcomeEmail } from "../emails/emailHandlers";
-import cloudinary from "../lib/cloudinary";
-import { ENV } from "../lib/ENV";
-import { generateToken } from "../lib/utils";
-import User from "../models/User";
+import express from "express"; // Fixed: Default import to avoid CJS/ESM conflict
+import { sendWelcomeEmail } from "../emails/emailHandlers.ts"; // Fixed: Removed .ts
+import cloudinary from "../lib/cloudinary.ts"; // Fixed: Removed .ts
+import { ENV } from "../lib/ENV.ts"; // Fixed: Removed .ts
+import { generateToken } from "../lib/utils.ts"; // Fixed: Removed .ts
+import User from "../models/User.ts"; // Fixed: Removed .ts
 import bcrypt from "bcryptjs";
 
 // Helper interface to allow req.user
-interface AuthenticatedRequest extends Request {
+interface AuthenticatedRequest extends express.Request {
     user?: any;
 }
 
-export const signup = async (req: Request, res: Response) => {
+export const signup = async (req: express.Request, res: express.Response) => {
     const { fullName, email, password } = req.body;
     try {
         if (!fullName || !email || !password) {
@@ -32,7 +32,7 @@ export const signup = async (req: Request, res: Response) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const newUser = new User({
+        const newUser: any = new User({ // Added :any here to stop collision
             fullName,
             email,
             password: hashedPassword
@@ -45,7 +45,7 @@ export const signup = async (req: Request, res: Response) => {
                 _id: newUser._id,
                 fullName: newUser.fullName,
                 email: newUser.email,
-                profilePic: (newUser as any).profilePic
+                profilePic: newUser.profilePic
             });
 
             // send welcome email to user 
@@ -63,7 +63,7 @@ export const signup = async (req: Request, res: Response) => {
     }
 }
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: express.Request, res: express.Response) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -71,7 +71,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     try {
-        const user = await User.findOne({ email });
+        const user: any = await User.findOne({ email }); // Added :any here
         if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
         const isPasswordCorrect = await bcrypt.compare(password, user.password as string);
@@ -82,7 +82,7 @@ export const login = async (req: Request, res: Response) => {
             _id: user._id,
             fullName: user.fullName,
             email: user.email,
-            profilePic: (user as any).profilePic
+            profilePic: user.profilePic
         });
     } catch (error) {
         console.error("Error in login controller: ", error);
@@ -90,12 +90,12 @@ export const login = async (req: Request, res: Response) => {
     }
 }
 
-export const logout = async (_: Request, res: Response) => {
+export const logout = async (_: express.Request, res: express.Response) => {
     res.cookie("jwt", "", { maxAge: 0 });
     res.status(200).json({ message: "Logged out successfully" });
 }
 
-export const updateProfile = async (req: AuthenticatedRequest, res: Response) => {
+export const updateProfile = async (req: AuthenticatedRequest, res: express.Response) => {
     try {
         const { profilePic } = req.body;
         if (!profilePic) return res.status(400).json({ message: "Profile pic is required" });

@@ -1,9 +1,10 @@
 import jwt from "jsonwebtoken";
 import "dotenv/config";
-import { Response } from "express";
-import { ENV } from "./ENV";
+import express from "express"; // Import the default package
+import { ENV } from "./ENV.ts";
 
-export const generateToken = (userId: any, res: Response): string => {
+// Use express.Response instead of a named import
+export const generateToken = (userId: any, res: express.Response): string => {
 
     const { JWT_SECRET } = ENV;
     if (!JWT_SECRET) {
@@ -18,7 +19,7 @@ export const generateToken = (userId: any, res: Response): string => {
         maxAge: 7 * 24 * 60 * 60 * 1000, 
         httpOnly: true, 
         sameSite: "strict",
-        secure: ENV.NODE_ENV === "development" ? false : true,
+        secure: ENV.NODE_ENV !== "development",
     });
 
     return token;

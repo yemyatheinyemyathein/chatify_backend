@@ -1,8 +1,8 @@
-import { ArcjetNodeRequest } from "@arcjet/node";
-import aj from "../lib/arcjet";
+import aj from "../lib/arcjet.ts";
 import { isSpoofedBot } from "@arcjet/inspect";
+import express from 'express'
 
-export const arcjetProtection = async (req: ArcjetNodeRequest, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { message: string; error?: string; }): any; new(): any; }; }; }, next: () => void) => {
+export const arcjetProtection = async (req: express.Request, res: express.Response, next: () => void) => {
   try {
     const decision = await aj.protect(req);
 

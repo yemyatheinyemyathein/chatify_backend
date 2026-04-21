@@ -1,16 +1,17 @@
-import { Request, Response } from "express";
-import User from "../models/User";
-import Message from "../models/Message";
-import cloudinary from "../lib/cloudinary";
-import { getReceiverSocketId, io } from "../lib/socket";
+import User from "../models/User.ts";
+import Message from "../models/Message.ts";
+import cloudinary from "../lib/cloudinary.ts";
+import { getReceiverSocketId, io } from "../lib/socket.ts";
+import express from "express";
 
-interface AuthenticatedRequest extends Request {
+// 1. Define the custom interface to allow 'user'
+interface AuthenticatedRequest extends express.Request {
   user?: any;
 }
 
 export const getAllContacts = async (
-  req: AuthenticatedRequest,
-  res: Response
+  req: AuthenticatedRequest, // Use AuthenticatedRequest instead of express.Request
+  res: express.Response
 ) => {
   try {
     const loggedInUserId = req.user._id;
@@ -25,8 +26,8 @@ export const getAllContacts = async (
 };
 
 export const getMessageByUserId = async (
-  req: AuthenticatedRequest,
-  res: Response
+  req: AuthenticatedRequest, // Use AuthenticatedRequest
+  res: express.Response
 ) => {
   try {
     const myId = req.user._id;
@@ -44,7 +45,10 @@ export const getMessageByUserId = async (
   }
 };
 
-export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
+export const sendMessage = async (
+  req: AuthenticatedRequest, // Use AuthenticatedRequest
+  res: express.Response
+) => {
   try {
     const { text, image } = req.body;
     const receiverId = req.params.id as string;
@@ -90,8 +94,8 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
 };
 
 export const getChatPartners = async (
-  req: AuthenticatedRequest,
-  res: Response
+  req: AuthenticatedRequest, // Use AuthenticatedRequest
+  res: express.Response
 ) => {
   try {
     const loggedInUserId = req.user._id;
