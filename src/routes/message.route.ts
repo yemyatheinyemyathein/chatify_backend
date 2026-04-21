@@ -1,6 +1,6 @@
 import express from "express";
-import { getAllContacts, getMessageByUserId,sendMessage, getChatPartners } from "../controllers/message.controller.ts";
-import { protectRoute } from "../middleware/auth.middleware.ts";
+import { getAllContacts, getMessageByUserId,sendMessage, getChatPartners } from "../controllers/message.controller";
+import { protectRoute } from "../middleware/auth.middleware";
 
 const router = express.Router();
 
