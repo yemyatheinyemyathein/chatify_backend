@@ -1,13 +1,13 @@
 import express from "express";
 import CookieParser from "cookie-parser";
-import authRoutes from "./routes/auth.route.ts";
-import messageRoutes from "./routes/message.route.ts";
+import authRoutes from "./routes/auth.route";
+import messageRoutes from "./routes/message.route";
 import path from "path";
-import { connectDB } from "./lib/db.ts";
+import { connectDB } from "./lib/db";
 import dns from "node:dns/promises";
-import { ENV } from "./lib/ENV.ts";
+import { ENV } from "./lib/ENV";
 import cors from "cors";
-import { app, server } from "./lib/socket.ts";
+import { app, server } from "./lib/socket";
 dns.setServers(["1.1.1.1"]);
 
 const __dirname = path.resolve();
