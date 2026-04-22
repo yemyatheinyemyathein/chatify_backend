@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import express from "express"; // Import the default package
-import { ENV } from "./ENV.ts";
+import { ENV } from "./ENV.js";
 
 // Use express.Response instead of a named import
 export const generateToken = (userId: any, res: express.Response): string => {

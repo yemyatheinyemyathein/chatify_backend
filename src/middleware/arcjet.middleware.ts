@@ -1,4 +1,4 @@
-import aj from "../lib/arcjet.ts";
+import aj from "../lib/arcjet.js";
 import { isSpoofedBot } from "@arcjet/inspect";
 import express from 'express'
 

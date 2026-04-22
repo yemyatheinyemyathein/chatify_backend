@@ -1,7 +1,7 @@
-import User from "../models/User.ts";
-import Message from "../models/Message.ts";
-import cloudinary from "../lib/cloudinary.ts";
-import { getReceiverSocketId, io } from "../lib/socket.ts";
+import User from "../models/User.js";
+import Message from "../models/Message.js";
+import cloudinary from "../lib/cloudinary.js";
+import { getReceiverSocketId, io } from "../lib/socket.js";
 import express from "express";
 
 // 1. Define the custom interface to allow 'user'

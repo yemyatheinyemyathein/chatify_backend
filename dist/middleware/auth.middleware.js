@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import User from "../models/User.ts"; // Removed .ts
-import { ENV } from "../lib/ENV.ts"; // Removed .ts
+import User from "../models/User.js";
+import { ENV } from "../lib/ENV.js";
 export const protectRoute = async (req, // Changed from express.Request to AuthenticatedRequest
 res, next // Using the standard Express NextFunction type
 ) => {

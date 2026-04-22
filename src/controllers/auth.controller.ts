@@ -1,9 +1,9 @@
 import express from "express"; // Fixed: Default import to avoid CJS/ESM conflict
-import { sendWelcomeEmail } from "../emails/emailHandlers.ts"; // Fixed: Removed .ts
-import cloudinary from "../lib/cloudinary.ts"; // Fixed: Removed .ts
-import { ENV } from "../lib/ENV.ts"; // Fixed: Removed .ts
-import { generateToken } from "../lib/utils.ts"; // Fixed: Removed .ts
-import User from "../models/User.ts"; // Fixed: Removed .ts
+import { sendWelcomeEmail } from "../emails/emailHandlers.js"; // Fixed: Removed .js
+import cloudinary from "../lib/cloudinary.js"; // Fixed: Removed .js
+import { ENV } from "../lib/ENV.js"; // Fixed: Removed .js
+import { generateToken } from "../lib/utils.js"; // Fixed: Removed .js
+import User from "../models/User.js"; // Fixed: Removed .js
 import bcrypt from "bcryptjs";
 
 // Helper interface to allow req.user

@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
 import jwt from "jsonwebtoken";
-import User from "../models/User.ts";
-import { ENV } from "../lib/ENV.ts";
+import User from "../models/User.js";
+import { ENV } from "../lib/ENV.js";
 
 // This allows us to attach user data to the socket object without errors
 interface AuthenticatedSocket extends Socket {

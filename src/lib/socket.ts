@@ -1,8 +1,8 @@
 import { Server, Socket } from "socket.io";
 import http from "http";
 import express from "express";
-import { socketAuthMiddleware } from "../middleware/socket.auth.middleware.ts";
-import { ENV } from "./ENV.ts";
+import { socketAuthMiddleware } from "../middleware/socket.auth.middleware.js";
+import { ENV } from "./ENV.js";
 
 interface UserPayload {
   _id: string;

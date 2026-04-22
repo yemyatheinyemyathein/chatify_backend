@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import User from "../models/User.ts";
-import { ENV } from "../lib/ENV.ts";
+import User from "../models/User.js";
+import { ENV } from "../lib/ENV.js";
 export const socketAuthMiddleware = async (socket, next) => {
     try {
         const token = socket.handshake.headers.cookie
