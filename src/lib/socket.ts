@@ -20,9 +20,14 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: [ENV.CLIENT_URL || "http://localhost:5173"],
+    origin: [
+      "http://localhost:5173", 
+      "https://chatify-xi-seven.vercel.app"
+    ],
+    methods: ["GET", "POST"],
     credentials: true,
   },
+  allowEIO3: true 
 });
 
 io.use(socketAuthMiddleware);

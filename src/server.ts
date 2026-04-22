@@ -16,15 +16,25 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const PORT = ENV.PORT || 3000;
+const allowedOrigins = [
+  'https://chatify-xi-seven.vercel.app',
+  'http://localhost:5173'
+];
 
 app.use(
   cors({
-    origin: 'https://chatify-xi-seven.vercel.app',
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        return callback(new Error('The CORS policy for this site does not allow access from the specified Origin.'), false);
+      }
+      return callback(null, true);
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })
 );
-
+app.options("*", cors());
 app.use(CookieParser());
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
