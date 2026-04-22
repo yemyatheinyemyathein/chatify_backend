@@ -1,14 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendWelcomeEmail = void 0;
-const resend_ts_1 = require("../lib/resend.ts");
-const emailTemplates_ts_1 = require("./emailTemplates.ts");
-const sendWelcomeEmail = async (email, name, clientURL) => {
-    const { data, error } = await resend_ts_1.resendClient.emails.send({
-        from: `${resend_ts_1.sender.name} <${resend_ts_1.sender.email}>`,
+import { resendClient, sender } from "../lib/resend.ts";
+import { createWelcomeEmailTemplates } from "./emailTemplates.ts";
+export const sendWelcomeEmail = async (email, name, clientURL) => {
+    const { data, error } = await resendClient.emails.send({
+        from: `${sender.name} <${sender.email}>`,
         subject: "Welcome to Chatify!",
-        to: email,
-        html: (0, emailTemplates_ts_1.createWelcomeEmailTemplates)(name, clientURL)
+        to: [email], // Resend usually expects an array or a single string
+        html: createWelcomeEmailTemplates(name, clientURL)
     });
     if (error) {
         console.error("Error sending welcome email: ", error);
@@ -16,4 +13,3 @@ const sendWelcomeEmail = async (email, name, clientURL) => {
     }
     console.log("Welcome email sent successfully ", data);
 };
-exports.sendWelcomeEmail = sendWelcomeEmail;

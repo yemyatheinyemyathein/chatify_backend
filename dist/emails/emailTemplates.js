@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.createWelcomeEmailTemplates = createWelcomeEmailTemplates;
-function createWelcomeEmailTemplates(name, clientURL) {
+export function createWelcomeEmailTemplates(name, clientURL) {
     return `
       <!DOCTYPE html>
       <html>

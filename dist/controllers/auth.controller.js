@@ -1,16 +1,10 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProfile = exports.logout = exports.login = exports.signup = void 0;
-const emailHandlers_ts_1 = require("../emails/emailHandlers.ts");
-const cloudinary_ts_1 = __importDefault(require("../lib/cloudinary.ts"));
-const ENV_ts_1 = require("../lib/ENV.ts");
-const utils_ts_1 = require("../lib/utils.ts");
-const User_ts_1 = __importDefault(require("../models/User.ts"));
-const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const signup = async (req, res) => {
+import { sendWelcomeEmail } from "../emails/emailHandlers.ts"; // Fixed: Removed .ts
+import cloudinary from "../lib/cloudinary.ts"; // Fixed: Removed .ts
+import { ENV } from "../lib/ENV.ts"; // Fixed: Removed .ts
+import { generateToken } from "../lib/utils.ts"; // Fixed: Removed .ts
+import User from "../models/User.ts"; // Fixed: Removed .ts
+import bcrypt from "bcryptjs";
+export const signup = async (req, res) => {
     const { fullName, email, password } = req.body;
     try {
         if (!fullName || !email || !password) {
@@ -19,23 +13,23 @@ const signup = async (req, res) => {
         if (password.length < 6) {
             return res.status(400).json({ message: "Password must be at least 6 characters" });
         }
-        const emailRegex = /^[^s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             return res.status(400).json({ message: "Invalid email format" });
         }
-        const user = await User_ts_1.default.findOne({ email });
+        const user = await User.findOne({ email });
         if (user)
             return res.status(400).json({ message: "Email already exists" });
-        const salt = await bcryptjs_1.default.genSalt(10);
-        const hashedPassword = await bcryptjs_1.default.hash(password, salt);
-        const newUser = new User_ts_1.default({
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        const newUser = new User({
             fullName,
             email,
             password: hashedPassword
         });
         if (newUser) {
             const savedUser = await newUser.save();
-            (0, utils_ts_1.generateToken)(savedUser._id, res);
+            generateToken(savedUser._id, res);
             res.status(201).json({
                 _id: newUser._id,
                 fullName: newUser.fullName,
@@ -44,7 +38,7 @@ const signup = async (req, res) => {
             });
             // send welcome email to user 
             try {
-                await (0, emailHandlers_ts_1.sendWelcomeEmail)(savedUser.email, savedUser.fullName, ENV_ts_1.ENV.CLIENT_URL);
+                await sendWelcomeEmail(savedUser.email, savedUser.fullName, ENV.CLIENT_URL);
             }
             catch (error) {
                 console.error("Failed to send welcome email :", error);
@@ -59,20 +53,19 @@ const signup = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
-exports.signup = signup;
-const login = async (req, res) => {
+export const login = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
         return res.status(400).json({ message: "Email and password are required" });
     }
     try {
-        const user = await User_ts_1.default.findOne({ email });
+        const user = await User.findOne({ email }); // Added :any here
         if (!user)
             return res.status(400).json({ message: "Invalid credentials" });
-        const isPasswordCorrect = await bcryptjs_1.default.compare(password, user.password);
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
         if (!isPasswordCorrect)
             return res.status(400).json({ message: "Invalid credentials" });
-        (0, utils_ts_1.generateToken)(user._id, res);
+        generateToken(user._id, res);
         res.status(200).json({
             _id: user._id,
             fullName: user.fullName,
@@ -85,20 +78,18 @@ const login = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
-exports.login = login;
-const logout = async (_, res) => {
+export const logout = async (_, res) => {
     res.cookie("jwt", "", { maxAge: 0 });
     res.status(200).json({ message: "Logged out successfully" });
 };
-exports.logout = logout;
-const updateProfile = async (req, res) => {
+export const updateProfile = async (req, res) => {
     try {
         const { profilePic } = req.body;
         if (!profilePic)
             return res.status(400).json({ message: "Profile pic is required" });
         const userId = req.user._id;
-        const uploadResponse = await cloudinary_ts_1.default.uploader.upload(profilePic);
-        const updatedUser = await User_ts_1.default.findByIdAndUpdate(userId, { profilePic: uploadResponse.secure_url }, { new: true });
+        const uploadResponse = await cloudinary.uploader.upload(profilePic);
+        const updatedUser = await User.findByIdAndUpdate(userId, { profilePic: uploadResponse.secure_url }, { new: true });
         res.status(200).json(updatedUser);
     }
     catch (error) {
@@ -106,4 +97,3 @@ const updateProfile = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
-exports.updateProfile = updateProfile;

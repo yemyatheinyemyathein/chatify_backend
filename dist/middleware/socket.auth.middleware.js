@@ -1,13 +1,7 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.socketAuthMiddleware = void 0;
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const User_ts_1 = __importDefault(require("../models/User.ts"));
-const ENV_ts_1 = require("../lib/ENV.ts");
-const socketAuthMiddleware = async (socket, next) => {
+import jwt from "jsonwebtoken";
+import User from "../models/User.ts";
+import { ENV } from "../lib/ENV.ts";
+export const socketAuthMiddleware = async (socket, next) => {
     try {
         const token = socket.handshake.headers.cookie
             ?.split("; ")
@@ -17,12 +11,12 @@ const socketAuthMiddleware = async (socket, next) => {
             console.log("Socket connection rejected: No token provided");
             return next(new Error("Unauthorized - No Token provided."));
         }
-        const decoded = jsonwebtoken_1.default.verify(token, ENV_ts_1.ENV.JWT_SECRET);
+        const decoded = jwt.verify(token, ENV.JWT_SECRET);
         if (!decoded) {
             console.log("Socket connection rejected: Invalid token");
             return next();
         }
-        const user = await User_ts_1.default.findById(decoded.userId).select("-password");
+        const user = await User.findById(decoded.userId).select("-password");
         if (!user) {
             console.log("Socket connection rejected: User not found");
             return next(new Error("User not found"));
@@ -37,4 +31,3 @@ const socketAuthMiddleware = async (socket, next) => {
         next(new Error("Unauthorized - Authentication failed"));
     }
 };
-exports.socketAuthMiddleware = socketAuthMiddleware;

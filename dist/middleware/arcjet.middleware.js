@@ -1,14 +1,8 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.arcjetProtection = void 0;
-const arcjet_ts_1 = __importDefault(require("../lib/arcjet.ts"));
-const inspect_1 = require("@arcjet/inspect");
-const arcjetProtection = async (req, res, next) => {
+import aj from "../lib/arcjet.ts";
+import { isSpoofedBot } from "@arcjet/inspect";
+export const arcjetProtection = async (req, res, next) => {
     try {
-        const decision = await arcjet_ts_1.default.protect(req);
+        const decision = await aj.protect(req);
         if (decision.isDenied()) {
             if (decision.reason.isRateLimit()) {
                 return res
@@ -24,7 +18,7 @@ const arcjetProtection = async (req, res, next) => {
                 });
             }
         }
-        if (decision.results.some(inspect_1.isSpoofedBot)) {
+        if (decision.results.some(isSpoofedBot)) {
             return res.status(403).json({
                 error: "Spoofed bot detected",
                 message: "Malicious bot activity detected."
@@ -36,4 +30,3 @@ const arcjetProtection = async (req, res, next) => {
         next();
     }
 };
-exports.arcjetProtection = arcjetProtection;
