@@ -19,7 +19,7 @@ const PORT = ENV.PORT || 3000;
 
 app.use(
   cors({
-    origin: ENV.CLIENT_URL,
+    origin: 'https://chatify-xi-seven.vercel.app',
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
