@@ -3,15 +3,14 @@ import User from "../models/User.js";
 import { ENV } from "../lib/ENV.js";
 import express from 'express';
 
-// Define the interface to extend the standard Express Request
 interface AuthenticatedRequest extends express.Request {
     user?: any;
 }
 
 export const protectRoute = async (
-    req: AuthenticatedRequest, // Changed from express.Request to AuthenticatedRequest
+    req: AuthenticatedRequest,
     res: express.Response,
-    next: express.NextFunction // Using the standard Express NextFunction type
+    next: express.NextFunction
 ) => {
     try {
         const token = req.cookies.jwt;

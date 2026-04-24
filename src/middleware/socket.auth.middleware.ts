@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import { ENV } from "../lib/ENV.js";
 
-// This allows us to attach user data to the socket object without errors
 interface AuthenticatedSocket extends Socket {
     user?: any;
     userId?: string;
